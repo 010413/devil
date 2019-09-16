@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.bgs.cpic.dao.IUserDao">
+    <select id="login" resultType="tbUser">
+      select u.*,level as userlevel from tb_user u,tb_address a where codename=#{codename} and u.aid = a.id
+    </select>
+    <select id="findUsers" resultType="tbUser">
+      select * from tb_user showEcharts
+    </select>
+    <select id="findAllAddress" resultType="tbAddress">
+        select *,1 as isParent from tb_address
+        <if test="pId==0 || pId==null">
+            where pId = 0
+        </if>
+        <if test="pId!=0 and pId !=null">
+            where pId =#{pId}
+        </if>
+    </select>
+    <select id="findAddressUsers" resultType="tbUser">
+     SELECT
+        tu.NAME,
+        tu.codename,
+        ta.LEVEL as userlevel
+    FROM
+        tb_address ta,
+        tb_user tu
+    WHERE
+        tu.aid = ta.id
+        AND ta.id = #{id}
+    </select>
+    <update id="updataAddress" parameterType="tbAddress">
+        update tb_address set name=#{name} where id=#{id}
+    </update>
+    <insert id="subAddress" parameterType="tbAddress">
+        insert into tb_address(name,level,pId,code) values(#{name},#{level},#{pId},#{code})
+    </insert>
+    <insert id="insertUser" parameterType="tbUser">
+        insert into tb_user(name,codename,password,aid) values(#{name},#{codename},#{password},#{aid})
+    </insert>
+    <delete id="deletAddress">
+        delete from tb_address where id=#{id}
+    </delete>
+    <select id="findPlans" resultType="tbPlan">
+        select * from tb_plan tp
+        left JOIN tb_user tu on tp.u_id = tu.id
+        left join tb_address ta on ta.id = tu.aid where
+        tp.implementation_rate = "0" and ta.level =#{userlevel}
+    </select>
+    <select id="findData" resultType="tbPlan">
+        SELECT tp.*,ta.name as adname from tb_plan tp
+        left JOIN tb_user tu on tp.u_id = tu.id
+        left join tb_address ta on ta.id = tu.aid
+        <where>
+            ta.level = #{userlevel} and implementation_rate &gt; "0"
+            <if test="tableParam.startTime!=null">
+                and execution_time between #{tableParam.startTime} and #{tableParam.endTime}
+            </if>
+        </where>
+    </select>
+    <insert id="subPlan" parameterType="tbPlan">
+        insert into tb_plan (plan_name, plan_tables, plan_starttime,entry_time, plan_endtime,u_id)
+        values (#{planName},#{planTables},#{planStarttime},now(),#{planEndtime},#{uId});
+    </insert>
+    <update id="insertReal" parameterType="tbPlan">
+      update tb_plan set tables=#{tables},new_customer=#{newCustomer},old_customer=#{oldCustomer},
+      intentional_customer=#{intentionalCustomer},predicted_premium=#{predictedPremium},
+      execution_time=#{executionTime},implementation_rate=#{implementationRate},aid=#{aid} where id=#{id}
+    </update>
+    <insert id="uploadFiles" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into tb_gallery(album_name) value
+        <foreach collection="list" separator="," item="gallery">
+            (#{gallery.albumName})
+        </foreach>
+    </insert>
+    <update id="addGid">
+        update tb_plan set g_id =#{gId} where id=#{id}
+    </update>
+
+    <select id="showEcharts" resultType="tbPlan">
+        select p.plan_starttime,p.plan_endtime,p.predicted_premium FROM tb_plan p where p.aid =p.level =#{userlevel};
+    </select>
+
+
+    <select id="shengFiline" resultType="tbPlan">
+        select p.plan_starttime,p.plan_endtime,p.predicted_premium FROM tb_plan p where p.aid =p.level =#{userlevel};
+    </select>
+
+
+</mapper>

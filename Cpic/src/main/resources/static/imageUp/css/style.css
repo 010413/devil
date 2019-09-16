@@ -1,0 +1,23 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*左滑*/
+.luara-left{position:relative;padding:0;overflow: hidden;}
+.luara-left ul{position: relative;padding: inherit;margin: 0;}
+.luara-left ul li{float: left;padding: inherit;margin: inherit;list-style: none;}
+.luara-left ul li img{width: inherit;height: inherit;}
+/*example*/
+.example{}
+.example ol{position:relative;width: 80px;height: 20px;top:-30px;left:60px;}
+.example ol li{float:left;width: 10px;height: 10px;margin: 5px;background: #fff;}
+.example ol li.seleted{background: #1AA4CA;}
+
+.example1{}
+.example1 ol{position:relative;width: 80px;height: 20px;top:-30px;left:60px;}
+.example1 ol li{float:left;width: 10px;height: 10px;margin: 5px;background: #fff;}
+.example1 ol li.seleted{background: #1AA4CA;}
+
+.example2{}
+.example2 ol{position:relative;width: 80px;height: 20px;top:-30px;left:60px;}
+.example2 ol li{float:left;width: 10px;height: 10px;margin: 5px;background: #fff;}
+.example2 ol li.seleted{background: #1AA4CA;}
